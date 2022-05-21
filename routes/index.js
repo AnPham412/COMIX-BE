@@ -32,6 +32,6 @@ router.use("/friends", friendApi);
 
 //comicApi
 const comicApi = require("./comic.api");
-router.use("/comic", comicApi);
+router.use("/view", comicApi);
 
 module.exports = router;

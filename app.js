@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 require("dotenv").config();
 const path = require("path");
 const cookieParser = require("cookie-parser");
@@ -19,6 +20,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 /* DB Connection */
 mongoose

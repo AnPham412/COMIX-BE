@@ -3,7 +3,7 @@ const router = express.Router();
 const postController = require("../controller/post.controller");
 const validators = require("../middlewares/validators");
 const authMiddleware = require("../middlewares/authentication");
-const { body, param } = require("express-validator");
+const { header, body, param } = require("express-validator");
 
 /**
  * @route POST /posts
@@ -13,7 +13,10 @@ const { body, param } = require("express-validator");
 router.post(
   "/",
   authMiddleware.loginRequired,
-  validators.validate([body("content", "Missing content").exists().notEmpty()]),
+  validators.validate([
+    header("title", "Missing title").exists().notEmpty(),
+    body("content", "Missing content").exists().notEmpty(),
+  ]),
   postController.createNewPost
 );
 
@@ -54,6 +57,7 @@ router.put(
   authMiddleware.loginRequired,
   validators.validate([
     param("id").exists().isString().custom(validators.checkObjectId),
+    header("title", "Missing title").exists().notEmpty(),
     body("content", "Missing content").exists().notEmpty(),
   ]),
   postController.updateSinglePost

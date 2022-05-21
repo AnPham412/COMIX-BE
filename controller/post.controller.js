@@ -71,9 +71,11 @@ postController.getSinglePost = catchAsync(async (req, res, next) => {
 
 postController.createNewPost = catchAsync(async (req, res, next) => {
   const author = req.userId;
+  const title = req.header;
   const { content, image } = req.body;
 
   let post = await Post.create({
+    title,
     content,
     author,
     image,
@@ -93,7 +95,7 @@ postController.updateSinglePost = catchAsync(async (req, res, next) => {
   if (!post.author.equals(author))
     throw new AppError(400, "Only author can edit post", "Update Post Error");
 
-  const allows = ["content", "image"];
+  const allows = ["title", "content", "image"];
   allows.forEach((field) => {
     if (req.body[field] !== undefined) {
       post[field] = req.body[field];

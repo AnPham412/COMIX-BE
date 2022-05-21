@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 const data = require("./comix.json");
 
 const loadData = async () => {

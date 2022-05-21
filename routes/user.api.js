@@ -4,6 +4,8 @@ const authMiddleware = require("../middlewares/authentication");
 const userController = require("../controller/user.controller");
 const validators = require("../middlewares/validators");
 const { body, param } = require("express-validator");
+const bodyParser = require("body-parser");
+const jsonParser = bodyParser.json();
 
 /**
  * @route POST /users
@@ -12,8 +14,10 @@ const { body, param } = require("express-validator");
  */
 router.post(
   "/",
+  jsonParser,
   validators.validate([
-    body("name", "Invalid name").exists().notEmpty(),
+    body("First name", "Invalid name").exists().notEmpty(),
+    body("Last name", "Invalid name").exists().notEmpty(),
     body("email", "Invalid email")
       .exists()
       .isEmail()

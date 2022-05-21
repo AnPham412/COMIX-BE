@@ -4,6 +4,7 @@ const User = require("./User");
 
 const postSchema = Schema(
   {
+    title: { type: String, required: true },
     content: { type: String, required: true },
     image: { type: String, default: "" },
     author: {
@@ -20,7 +21,6 @@ const postSchema = Schema(
   },
   { timestamps: true }
 );
-//bookmark
 
 postSchema.plugin(require("./plugins/isDeletedFalse"));
 
