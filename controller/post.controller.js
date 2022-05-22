@@ -13,7 +13,26 @@ const calculatePostCount = async (userId) => {
   await User.findByIdAndUpdate(userId, { postCount: postCount });
 };
 
-postController.getPosts = catchAsync(async (req, res, next) => {
+// 1. User can create a post
+postController.createNewPost = catchAsync(async (req, res, next) => {
+  const author = req.userId;
+  const title = req.header;
+  const { content, image } = req.body;
+
+  let post = await Post.create({
+    title,
+    content,
+    author,
+    image,
+  });
+  await calculatePostCount(author);
+  post = await post.populate("author");
+
+  return sendResponse(res, 200, true, post, null, "Create new post successful");
+});
+
+// 2. User can see post list
+postController.getPostList = catchAsync(async (req, res, next) => {
   let { page, limit } = { ...req.query };
   const userId = req.params.userId;
 
@@ -58,6 +77,7 @@ postController.getPosts = catchAsync(async (req, res, next) => {
   return sendResponse(res, 200, true, { posts, totalPages, count }, null, "");
 });
 
+// 3. User can see a single post
 postController.getSinglePost = catchAsync(async (req, res, next) => {
   let post = await Post.findById(req.params.id).populate("author");
 
@@ -69,24 +89,8 @@ postController.getSinglePost = catchAsync(async (req, res, next) => {
   return sendResponse(res, 200, true, post, null, null);
 });
 
-postController.createNewPost = catchAsync(async (req, res, next) => {
-  const author = req.userId;
-  const title = req.header;
-  const { content, image } = req.body;
-
-  let post = await Post.create({
-    title,
-    content,
-    author,
-    image,
-  });
-  await calculatePostCount(author);
-  post = await post.populate("author");
-
-  return sendResponse(res, 200, true, post, null, "Create new post successful");
-});
-
-postController.updateSinglePost = catchAsync(async (req, res, next) => {
+// 4. User can update their post created
+postController.updatePost = catchAsync(async (req, res, next) => {
   const author = req.userId;
   const postId = req.params.id;
 
@@ -135,7 +139,8 @@ postController.getCommentsOfPost = catchAsync(async (req, res, next) => {
   );
 });
 
-postController.deleteSinglePost = catchAsync(async (req, res, next) => {
+// 5. User can delete post
+postController.deletePost = catchAsync(async (req, res, next) => {
   const author = req.userId;
   const postId = req.params.id;
 

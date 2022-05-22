@@ -2,8 +2,11 @@ const express = require("express");
 const router = express.Router();
 const postController = require("../controller/post.controller");
 const validators = require("../middlewares/validators");
-const authMiddleware = require("../middlewares/authentication");
+const { loginRequired } = require("../middlewares/authentication");
 const { header, body, param } = require("express-validator");
+
+const { createNewPost, updatePost, deletePost, getSinglePost, getPostList } =
+  postController;
 
 /**
  * @route POST /posts
@@ -11,13 +14,13 @@ const { header, body, param } = require("express-validator");
  * @access Login required
  */
 router.post(
-  "/",
-  authMiddleware.loginRequired,
+  "/create",
+  loginRequired,
   validators.validate([
     header("title", "Missing title").exists().notEmpty(),
     body("content", "Missing content").exists().notEmpty(),
   ]),
-  postController.createNewPost
+  createNewPost
 );
 
 /**
@@ -26,11 +29,11 @@ router.post(
  * @access Login required
  */
 router.get(
-  "/user/:userId",
+  "/postlist/:userId",
   validators.validate([
     param("userId").exists().isString().custom(validators.checkObjectId),
   ]),
-  postController.getPosts
+  getPostList
 );
 
 /**
@@ -40,11 +43,11 @@ router.get(
  */
 router.get(
   "/:id",
-  authMiddleware.loginRequired,
+  loginRequired,
   validators.validate([
     param("id").exists().isString().custom(validators.checkObjectId),
   ]),
-  postController.getSinglePost
+  getSinglePost
 );
 
 /**
@@ -54,13 +57,13 @@ router.get(
  */
 router.put(
   "/:id",
-  authMiddleware.loginRequired,
+  loginRequired,
   validators.validate([
     param("id").exists().isString().custom(validators.checkObjectId),
     header("title", "Missing title").exists().notEmpty(),
     body("content", "Missing content").exists().notEmpty(),
   ]),
-  postController.updateSinglePost
+  updatePost
 );
 
 /**
@@ -70,25 +73,11 @@ router.put(
  */
 router.delete(
   "/:id",
-  authMiddleware.loginRequired,
+  loginRequired,
   validators.validate([
     param("id").exists().isString().custom(validators.checkObjectId),
   ]),
-  postController.deleteSinglePost
-);
-
-/**
- * @route GET /posts/:id/comments
- * @description Get comments of a post
- * @access Login required
- */
-router.get(
-  "/:id/comments",
-  authMiddleware.loginRequired,
-  validators.validate([
-    param("id").exists().isString().custom(validators.checkObjectId),
-  ]),
-  postController.getCommentsOfPost
+  deletePost
 );
 
 module.exports = router;

@@ -1,11 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware = require("../middlewares/authentication");
 const userController = require("../controller/user.controller");
 const validators = require("../middlewares/validators");
 const { body, param } = require("express-validator");
 const bodyParser = require("body-parser");
-const jsonParser = bodyParser.json();
+const { loginRequired } = require("../middlewares/authentication");
+
+const {
+  register,
+  loginEmailPassword,
+  getCurrentUser,
+  updateProfile,
+  getAllUsers,
+  getUserRole,
+  getSingleUser,
+  deleteUser,
+} = require("../controller/user.controller");
 
 /**
  * @route POST /users
@@ -14,7 +24,7 @@ const jsonParser = bodyParser.json();
  */
 router.post(
   "/",
-  jsonParser,
+  bodyParser,
   validators.validate([
     body("First name", "Invalid name").exists().notEmpty(),
     body("Last name", "Invalid name").exists().notEmpty(),
@@ -24,22 +34,29 @@ router.post(
       .normalizeEmail({ gmail_remove_dots: false }),
     body("password", "Invalid password").exists().notEmpty(),
   ]),
-  userController.register
+  register
 );
+
+/**
+ * @route POST /users
+ * @description Login by email and password
+ * @access Login required
+ */
+router.post("/login", loginEmailPassword);
 
 /**
  * @route GET /users/me
  * @description Get current user info
  * @access Login required
  */
-router.get("/me", authMiddleware.loginRequired, userController.getCurrentUser);
+router.get("/me", loginRequired, getCurrentUser);
 
 /**
  * @route GET /users?page=1&limit=10
  * @description Get users with pagination
  * @access Login required
  */
-router.get("/", authMiddleware.loginRequired, userController.getUsers);
+router.get("/", aloginRequired, getAllUsers);
 
 /**
  * @route GET /users/:id
@@ -47,12 +64,12 @@ router.get("/", authMiddleware.loginRequired, userController.getUsers);
  * @access Login required
  */
 router.get(
-  "/:id",
-  authMiddleware.loginRequired,
+  "/:userId",
+  loginRequired,
   validators.validate([
-    param("id").exists().isString().custom(validators.checkObjectId),
+    param("userId").exists().isString().custom(validators.checkObjectId),
   ]),
-  userController.getSingleUser
+  getSingleUser
 );
 
 /**
@@ -60,6 +77,15 @@ router.get(
  * @description Update user profile
  * @access Login required
  */
-router.put("/:id", authMiddleware.loginRequired, userController.updateProfile);
+router.put("/me/update", loginRequired, updateProfile);
+
+/**
+ * @route DEL /users
+ * @description Delete user by id
+ * @access Login required
+ */
+router.delete("/delete/:userId", loginRequired, isAdmin, deleteUser);
+
+router.get("/role/all", loginRequired, getUserRole);
 
 module.exports = router;

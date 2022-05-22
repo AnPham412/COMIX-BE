@@ -1,37 +1,24 @@
 const express = require("express");
 const router = express.Router();
 
-/* GET home page. */
-router.get("/", function (req, res, next) {
-  res.send("home");
-});
-
-// authApi
-const authApi = require("./auth.api");
-router.use("/auth", authApi);
-
 // userApi
-const userApi = require("./user.api");
-router.use("/users", userApi);
+const userRouter = require("./user.api");
+router.use("/users", userRouter);
 
 // postApi
-const postApi = require("./post.api");
-router.use("/posts", postApi);
+const postRouter = require("./post.api");
+router.use("/posts", postRouter);
 
 // commentApi
-const commentApi = require("./comment.api");
-router.use("/comments", commentApi);
-
-// reactionApi
-const reactionApi = require("./reaction.api");
-router.use("/reactions", reactionApi);
+const commentRouter = require("./comment.api");
+router.use("/comment", commentRouter);
 
 // friendApi
-const friendApi = require("./friend.api");
-router.use("/friends", friendApi);
+const friendRouter = require("./friend.api");
+router.use("/users/friend", friendRouter);
 
 //comicApi
-const comicApi = require("./comic.api");
-router.use("/view", comicApi);
+const comicRouter = require("./comic.api");
+router.use("/view", comicRouter);
 
 module.exports = router;

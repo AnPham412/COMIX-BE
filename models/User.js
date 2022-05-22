@@ -8,12 +8,18 @@ const userSchema = Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: false },
-
+    aboutMe: { type: String },
     avatarUrl: { type: String, require: false, default: "" },
     coverUrl: { type: String, require: false, default: "" },
 
     postCount: { type: Number, default: 0 },
     isDeleted: { type: Boolean, default: false, select: false },
+    roles: {
+      type: String,
+      require: true,
+      enum: ["admin", "guest"],
+      default: "staff",
+    },
   },
   { timestamps: true }
 );
@@ -28,9 +34,13 @@ userSchema.methods.toJSON = function () {
 };
 
 userSchema.methods.generateToken = async function () {
-  const accessToken = await jwt.sign({ _id: this._id }, JWT_SECRET_KEY, {
-    expiresIn: "1d",
-  });
+  const accessToken = await jwt.sign(
+    { _id: this._id, role: this.role },
+    JWT_SECRET_KEY,
+    {
+      expiresIn: "1d",
+    }
+  );
   return accessToken;
 };
 

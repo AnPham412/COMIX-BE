@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware = require("../middlewares/authentication");
+const { loginRequired } = require("../middlewares/authentication");
 const validators = require("../middlewares/validators");
 const friendController = require("../controller/friend.controller");
 const { body, param } = require("express-validator");
@@ -12,7 +12,7 @@ const { body, param } = require("express-validator");
  */
 router.post(
   "/requests",
-  authMiddleware.loginRequired,
+  loginRequired,
   validators.validate([
     body("to").exists().isString().custom(validators.checkObjectId),
   ]),
@@ -26,7 +26,7 @@ router.post(
  */
 router.get(
   "/requests/incoming",
-  authMiddleware.loginRequired,
+  loginRequired,
   friendController.getReceivedFriendRequestList
 );
 
@@ -37,7 +37,7 @@ router.get(
  */
 router.get(
   "/requests/outgoing",
-  authMiddleware.loginRequired,
+  loginRequired,
   friendController.getSentFriendRequestList
 );
 
@@ -48,7 +48,7 @@ router.get(
  */
 router.put(
   "/requests/:userId",
-  authMiddleware.loginRequired,
+  loginRequired,
   validators.validate([
     param("userId").exists().isString().custom(validators.checkObjectId),
     body("status").exists().isString().isIn(["accepted", "declined"]),
@@ -63,7 +63,7 @@ router.put(
  */
 router.delete(
   "/requests/:userId",
-  authMiddleware.loginRequired,
+  loginRequired,
   validators.validate([
     param("userId").exists().isString().custom(validators.checkObjectId),
   ]),
@@ -75,7 +75,11 @@ router.delete(
  * @description Get the list of friends
  * @access Login required
  */
-router.get("/", authMiddleware.loginRequired, friendController.getFriendList);
+router.get(
+  "/friendlist",
+  authMiddleware.loginRequired,
+  friendController.getFriendList
+);
 
 /**
  * @route DELETE /friends/:userId

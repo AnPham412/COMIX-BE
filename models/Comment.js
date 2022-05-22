@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Post = require("./Post");
 
 const Schema = mongoose.Schema;
 
@@ -12,6 +11,7 @@ const commentSchema = Schema(
       like: { type: Number, default: 0 },
       dislike: { type: Number, default: 0 },
     },
+    reply: { type: String },
   },
   { timestamps: true }
 );
