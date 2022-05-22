@@ -15,7 +15,7 @@ const {
   getUserRole,
   getSingleUser,
   deleteUser,
-} = require("../controller/user.controller");
+} = userController;
 
 /**
  * @route POST /users

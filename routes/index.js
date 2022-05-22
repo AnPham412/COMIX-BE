@@ -3,7 +3,7 @@ const router = express.Router();
 
 // userApi
 const userRouter = require("./user.api");
-router.use("/user", userRouter);
+router.use("/users", userRouter);
 
 // postApi
 const postRouter = require("./post.api");
