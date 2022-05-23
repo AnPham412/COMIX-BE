@@ -15,7 +15,7 @@ router.use("/comment", commentRouter);
 
 // friendApi
 const friendRouter = require("./friend.api");
-router.use("/user/friend", friendRouter);
+router.use("/friend", friendRouter);
 
 //comicApi
 const comicRouter = require("./comic.api");

@@ -4,7 +4,7 @@ const userController = require("../controller/user.controller");
 const validators = require("../middlewares/validators");
 const { body, param } = require("express-validator");
 const bodyParser = require("body-parser");
-const { loginRequired } = require("../middlewares/authentication");
+const { loginRequired, isAdmin } = require("../middlewares/authentication");
 
 const {
   register,
@@ -23,7 +23,7 @@ const {
  * @access Public
  */
 router.post(
-  "/",
+  "/regist",
   bodyParser,
   validators.validate([
     body("First name", "Invalid name").exists().notEmpty(),
@@ -56,7 +56,7 @@ router.get("/me", loginRequired, getCurrentUser);
  * @description Get users with pagination
  * @access Login required
  */
-router.get("/", aloginRequired, getAllUsers);
+router.get("/", loginRequired, getAllUsers);
 
 /**
  * @route GET /users/:id

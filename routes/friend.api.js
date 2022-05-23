@@ -75,11 +75,7 @@ router.delete(
  * @description Get the list of friends
  * @access Login required
  */
-router.get(
-  "/friendlist",
-  authMiddleware.loginRequired,
-  friendController.getFriendList
-);
+router.get("/friendlist", loginRequired, friendController.getFriendList);
 
 /**
  * @route DELETE /friends/:userId
@@ -88,7 +84,7 @@ router.get(
  */
 router.delete(
   "/:userId",
-  authMiddleware.loginRequired,
+  loginRequired,
   validators.validate([
     param("userId").exists().isString().custom(validators.checkObjectId),
   ]),
