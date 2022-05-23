@@ -56,7 +56,7 @@ router.get("/me", loginRequired, getCurrentUser);
  * @description Get users with pagination
  * @access Login required
  */
-router.get("/", loginRequired, getAllUsers);
+router.get("/userlist", loginRequired, getAllUsers);
 
 /**
  * @route GET /users/:id
