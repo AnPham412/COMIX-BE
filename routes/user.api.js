@@ -23,7 +23,7 @@ const {
  * @access Public
  */
 router.post(
-  "/regist",
+  "/register",
   bodyParser,
   validators.validate([
     body("First name", "Invalid name").exists().notEmpty(),
